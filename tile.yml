@@ -1,5 +1,4 @@
----
-# The high-level description of your tile.
+# high-level description of your tile.
 # Replace these properties with real values.
 #
 name: ecs-broker-tile # By convention lowercase with dashes
@@ -128,12 +127,12 @@ forms:
       type: string
       configurable: true
       optional: true
-    - name: apiUserName
+    - name: UserName
       label: ECS Admin Username
       description: 'Enter the name of the ECS Management API user.'
       type: string
       configurable: true
-    - name: apiPassword
+    - name: Password
       label: ECS Admin Password
       description: 'Enter the ECS Management API password.'
       type: string
@@ -200,55 +199,12 @@ packages:
       type: integer
       configurable: false
       default: 1
-    property_blueprints:
-    - name: vm_credentials
-      type: salted_credentials
-      default:
-        identity: vcap
-    - name: broker_credentials
-      type: salted_credentials
-
-    manifest: |
-      domain: (( ..cf.cloud_controller.system_domain.value ))
-      app_domains:
-        - (( ..cf.cloud_controller.apps_domain.value ))
-      ssl:
-        skip_cert_verify: (( ..cf.ha_proxy.skip_cert_verify.value ))
+    properties:
       uaa:
         url: https://uaa.(( ..cf.cloud_controller.system_domain.value ))
         clients:
           ecs_broker:
             secret: test
-      ecs_broker:
-        app_name: (( .properties.app_name.value ))
-        app_version: (( .properties.app_version.value ))
-        app_uri: (( .properties.app_uri.value ))
-        create_open_security_group: (( .properties.create_open_security_group.value ))
-        app_push:
-          org_quota: (( .properties.org_quota.value ))
-          timeout: 180
-          memory: (( .properties.memory.value ))
-        persistence_store_type: none
-        encryption_key: (( .properties.encryption_key.value ))
-        cf:
-          admin_user: (( ..cf.uaa.system_services_credentials.identity ))
-          admin_password: (( ..cf.uaa.system_services_credentials.password ))
-        broker:
-          internal_service_names: (( .properties.internal_service_names.value ))
-          managementEndpoint: (( .properties.managementEndpoint.value ))
-          objectEndpoint: (( .properties.objectEndpoint.value ))
-          baseUrl: (( .properties.baseUrl.value ))
-          repositoryEndpoint: (( .properties.repositoryEndpoint.value ))
-          replicationGroup: (( .properties.replicationGroup.value ))
-          namespace: (( .properties.namespace.value ))
-          repositoryUser: (( .properties.repositoryUser.value ))
-          repositoryBucket: (( .properties.repositoryBucket.value ))
-          username: (( .properties.apiUserName.value ))
-          password: (( .properties.apiPassword.value ))
-          prefix: (( .properties.prefix.value ))
-          certificate: (( .properties.certificate.value ))
-          securityUser: (( .properties.securityUser.value ))
-          securityPassword: (( .properties.securityPassword.value ))
 
   - name: register-broker
     resource_label: Register Ecs Service Broker
@@ -283,36 +239,14 @@ packages:
       type: integer
       configurable: false
       default: 1
-    property_blueprints:
-    - name: vm_credentials
-      type: salted_credentials
-      default:
-        identity: vcap
-
-    manifest: |
-      domain: (( ..cf.cloud_controller.system_domain.value ))
-      app_domains:
-        - (( ..cf.cloud_controller.apps_domain.value ))
-      ssl:
-        skip_cert_verify: (( ..cf.ha_proxy.skip_cert_verify.value ))
+    properties:
       uaa:
         url: https://uaa.(( ..cf.cloud_controller.system_domain.value ))
         clients:
           ecs_broker:
             secret: test
-      ecs_broker:
-        app_name: (( .properties.app_name.value ))
-        app_version: (( .properties.app_version.value ))
-        app_uri: (( .properties.app_uri.value ))
-        encryption_key: (( .properties.encryption_key.value ))
-        enable_global_access_to_plans: (( .properties.enable_global_access_to_plans.value ))
-        cf:
-          admin_user: (( ..cf.uaa.system_services_credentials.identity ))
-          admin_password: (( ..cf.uaa.system_services_credentials.password ))
-        broker:
-          securityUser: (( .properties.securityUser.value ))
-          securityPassword: (( .properties.securityPassword.value ))
-          internal_service_names: (( .properties.internal_service_names.value ))
+
+
 
   - name: destroy-broker
     resource_label: Remove Ecs Service Broker
@@ -347,35 +281,14 @@ packages:
       type: integer
       configurable: false
       default: 1
-    property_blueprints:
-    - name: vm_credentials
-      type: salted_credentials
-      default:
-        identity: vcap
-
-    manifest: |
-      domain: (( ..cf.cloud_controller.system_domain.value ))
-      app_domains:
-        - (( ..cf.cloud_controller.apps_domain.value ))
-      ssl:
-        skip_cert_verify: (( ..cf.ha_proxy.skip_cert_verify.value ))
+    properties:
       uaa:
         url: https://uaa.(( ..cf.cloud_controller.system_domain.value ))
         clients:
           ecs_broker:
             secret: test
-      ecs_broker:
-        app_name: (( .properties.app_name.value ))
-        app_version: (( .properties.app_version.value ))
-        app_uri: (( .properties.app_uri.value ))
-        encryption_key: (( .properties.encryption_key.value ))
-        cf:
-          admin_user: (( ..cf.uaa.system_services_credentials.identity ))
-          admin_password: (( ..cf.uaa.system_services_credentials.password ))
-        broker:
-          internal_service_names: (( .properties.internal_service_names.value ))
-          securityUser: (( .properties.securityUser.value ))
-          securityPassword: (( .properties.securityPassword.value ))
+
+
 
   - name: compilation
     resource_label: compilation
@@ -423,6 +336,3 @@ post_deploy_errands:
 - name: register-broker
 pre_delete_errands:
 - name: destroy-broker
-
-
-
