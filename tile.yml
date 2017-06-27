@@ -1,12 +1,13 @@
-# high-level description of your tile.
+---
+# The high-level description of your tile.
 # Replace these properties with real values.
 #
 name: ecs-broker-tile # By convention lowercase with dashes
 icon_file: resources/icon.png
 label: DELL/EMC ECS Broker 
 description: ECS Broker for Pivotal CF 
-metadata_version: 1.5                 # Optional, defaults to 1.5
-
+metadata_version: 1.8               # Optional, defaults to 1.5
+rank: 50
 # Global defaults (all optional)
 #
 # org: test-org                         # Name of org to create for your apps
@@ -127,12 +128,12 @@ forms:
       type: string
       configurable: true
       optional: true
-    - name: UserName
+    - name: apiUserName
       label: ECS Admin Username
       description: 'Enter the name of the ECS Management API user.'
       type: string
       configurable: true
-    - name: Password
+    - name: apiPassword
       label: ECS Admin Password
       description: 'Enter the ECS Management API password.'
       type: string
@@ -200,11 +201,12 @@ packages:
       configurable: false
       default: 1
     properties:
-      uaa:
-        url: https://uaa.(( ..cf.cloud_controller.system_domain.value ))
-        clients:
-          ecs_broker:
-            secret: test
+    - name: vm_credentials
+      type: salted_credentials
+      default:
+        identity: vcap
+    - name: broker_credentials
+      type: salted_credentials
 
   - name: register-broker
     resource_label: Register Ecs Service Broker
@@ -240,13 +242,10 @@ packages:
       configurable: false
       default: 1
     properties:
-      uaa:
-        url: https://uaa.(( ..cf.cloud_controller.system_domain.value ))
-        clients:
-          ecs_broker:
-            secret: test
-
-
+    - name: vm_credentials
+      type: salted_credentials
+      default:
+        identity: vcap
 
   - name: destroy-broker
     resource_label: Remove Ecs Service Broker
@@ -282,13 +281,10 @@ packages:
       configurable: false
       default: 1
     properties:
-      uaa:
-        url: https://uaa.(( ..cf.cloud_controller.system_domain.value ))
-        clients:
-          ecs_broker:
-            secret: test
-
-
+    - name: vm_credentials
+      type: salted_credentials
+      default:
+        identity: vcap
 
   - name: compilation
     resource_label: compilation
@@ -309,11 +305,9 @@ packages:
        type: integer
        configurable: true
        default: 2
-
     static_ip: 0
     dynamic_ip: 1
     max_in_flight: 1
-
     instance_definitions:
       - name: instances
         type: integer
@@ -336,3 +330,6 @@ post_deploy_errands:
 - name: register-broker
 pre_delete_errands:
 - name: destroy-broker
+
+
+
